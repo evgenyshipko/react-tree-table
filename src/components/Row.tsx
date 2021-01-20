@@ -1,10 +1,10 @@
 import React, { Component, CSSProperties } from 'react'
 import Cell from './Cell'
-import { CellData } from '../types/Types'
+import { ICellData } from '../types/Types'
 import deepEqual from 'deep-equal'
 
 export interface RowProps {
-    cellDataList: CellData[]
+    cellDataList: ICellData[]
     style?: CSSProperties
     className?: string
 }
@@ -14,8 +14,8 @@ class Row extends Component<RowProps> {
         return !deepEqual(this.props.cellDataList, nextProps.cellDataList)
     }
 
-    getCell(props: CellData) {
-        return <Cell {...props} />
+    getCell(props: ICellData, key: number) {
+        return <Cell {...props} key={key} />
     }
 
     render() {
@@ -23,7 +23,7 @@ class Row extends Component<RowProps> {
         console.log('=== render Row ===')
         return (
             <tr style={style} className={className}>
-                {cellDataList.map((cellData) => this.getCell(cellData))}
+                {cellDataList.map((cellData, index) => this.getCell(cellData, index))}
             </tr>
         )
     }

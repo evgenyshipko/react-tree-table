@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import './App.css';
-import {ShipTable, ShipTableProps, CellValue} from "shiptable";
+import {ShipTable, ShipTableProps, CellValue, ICellData, CellData} from "shiptable"
 
 interface State {
   tableData: ShipTableProps
@@ -42,13 +42,13 @@ class App extends Component<any>{
         {
           id: 'aaa',
           data: {
-            first: {
+            first: new CellData<string>({
               data: '1212',
               renderer: this.myRender
-            },
-            second: {
+            }),
+            second: new CellData<string>({
               data: 'privet'
-            }
+            })
           }
         },
         {
@@ -60,7 +60,7 @@ class App extends Component<any>{
             second: {
               data: 'poka'
             }
-          }
+          } as Record<string, ICellData<string>>
         }
       ]
     }

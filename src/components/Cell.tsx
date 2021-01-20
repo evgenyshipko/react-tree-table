@@ -1,9 +1,9 @@
 import React, { Component } from 'react'
-import { CellData, CellValue } from '../types/Types'
+import { CellValue, ICellData } from '..'
 import deepEqual from 'deep-equal'
 
-class Cell extends Component<CellData> {
-    shouldComponentUpdate(nextProps: Readonly<CellData>): boolean {
+class Cell extends Component<ICellData> {
+    shouldComponentUpdate(nextProps: Readonly<ICellData>): boolean {
         return !deepEqual(this.props.data, nextProps.data)
     }
 
@@ -22,6 +22,7 @@ class Cell extends Component<CellData> {
         console.log('=== render Cell ===')
         return (
             <td
+                key={this.props.key}
                 style={style}
                 className={className}
             >

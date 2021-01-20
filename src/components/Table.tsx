@@ -19,7 +19,7 @@ class Table extends Component<TableProps> {
                     <HeaderRow {...header}/>
                 </thead>
                 <tbody>
-                    {rowList.map((rowData) => <Row {...rowData} />)}
+                    {rowList.map((rowData, index) => <Row {...rowData} key={index}/>)}
                 </tbody>
             </table>
         )
