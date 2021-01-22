@@ -1,73 +1,161 @@
 import React, {Component} from 'react';
-import './App.css';
-import {ShipTable, ShipTableProps, CellValue, ICellData, CellData} from "shiptable"
-
-interface State {
-  tableData: ShipTableProps
-}
+import {CellData, ICellData, CellValue, RendererProps, ShipTable, ShipTableProps} from "shiptable"
 
 
 class App extends Component<any>{
 
-  myRender = (data: string): CellValue => {
-    return <button onClick={() => {
-      this.setState({
-          tableData: {
-              ...this.state.tableData,
-              rows: this.state.tableData.rows.map((row) => {
-                    return row.id === 'bbb' ? {...row, data: {...row.data, first: {data: 'heer'}}} : row
-                  })
-          }
-      })
-    }}>{data}</button>
-  }
+    buttonChangeRenderer = (props: RendererProps<string>): CellValue => {
+        const { rowData, data} = props
+        const rowId = rowData.id
+        return <button
+          disabled={!rowData.data.first?.data}
+          onClick={() => {
+        this.setState({
+                ...this.state,
+                rows: this.state.rows.map((row) => {
+                      if(row.id === rowId) {return  {...row, data: {...row.data, third: {
+                            ...row.data.third,
+                        data: 'changed'
+                      }}}}
+                      return row
+                    })
 
-  state: State = {
-    tableData: this.getTableData()
-  }
+        })
+      }}>{data}</button>
+    }
 
-  getTableData(): ShipTableProps{
-    return {
+    buttonDisableRenderer = (props: RendererProps<string>): CellValue => {
+        const { rowData, data} = props
+        if (data){
+            return <button
+                disabled={!rowData.data.first?.data}
+                onClick={() => {
+                    this.setState({
+                        ...this.state,
+                        rows: this.state.rows.map((row) => {
+                            if (row.id === 'ccc'){
+                                return {
+                                    ...row,
+                                    disabled: !row.disabled
+                                }
+                            }
+                            return row
+                        })
+
+                    })
+                }}>{data}</button>
+        }else{
+            return data
+        }
+    }
+
+
+    inputRenderer = (props: RendererProps<string>): CellValue => {
+        const { rowData, data } = props
+        const rowId = rowData.id
+        return <input
+            value={data}
+            type="text"
+            onChange={(e) => {
+                this.setState({
+                    rows: this.state.rows.map((row) => {
+                        return row.id === rowId ? {
+                            ...row, data:
+                                {...row.data,
+                                    first: {
+                                        ...row.data.first,
+                                        data: e.target.value
+                                    }
+                                }
+                        } : row
+                    })
+                })
+            }
+            }/>
+    }
+
+
+  state: ShipTableProps = {
       columns: [
+        {
+          id: 'first',
+          title: 'Первый'
+        },
         {
           id: 'second',
           title: 'Второй'
         },
         {
-          id: 'first',
-          title: 'Первый'
+          id: 'third',
+          title: 'Третий'
         },
       ],
       rows:[
         {
           id: 'aaa',
           data: {
-            first: new CellData<string>({
-              data: '1212',
-              renderer: this.myRender
-            }),
+            first: {
+              data: '',
+              renderer: this.inputRenderer
+            } as ICellData<string>,
             second: new CellData<string>({
-              data: 'privet'
+              data: "btn",
+              renderer: this.buttonChangeRenderer
+            }),
+            third: new CellData<string>({
+                renderer: this.buttonDisableRenderer
             })
           }
         },
         {
           id: 'bbb',
           data: {
-            first: {
-              data: 'poka'
-            },
-            second: {
-              data: 'poka'
-            }
-          } as Record<string, ICellData<string>>
+            first: new CellData<string>({
+              data: '',
+              renderer: this.inputRenderer
+            }),
+            second: new CellData<string>({
+              data: "btn",
+              renderer: this.buttonChangeRenderer
+            }),
+            third: new CellData<string>({
+                renderer: this.buttonDisableRenderer
+            })
+          }
+        },
+        {
+          id: 'ccc',
+          data: {
+            first: new CellData<string>({
+              data: '',
+              renderer: this.inputRenderer
+            }),
+            second: new CellData<string>({
+              data: "btn",
+              renderer: this.buttonChangeRenderer
+            }),
+            third: new CellData<string>({
+                renderer: this.buttonDisableRenderer
+            })
+          }
         }
       ]
-    }
+  }
+
+  reverseColumns = () => {
+    this.setState({
+        ...this.state,
+        columns: this.state.columns.reverse()
+    })
   }
 
   render(){
-    return <ShipTable {...this.state.tableData} />
+    return (
+        <div>
+            <button onClick={this.reverseColumns}>Перемешать</button>
+            <ShipTable {...this.state} />
+        </div>
+        )
   }
 }
 
