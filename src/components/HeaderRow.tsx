@@ -1,10 +1,10 @@
 import React from 'react'
 import Row from './Row'
 import HeaderCell from './HeaderCell'
-import { ICellData } from '../types/Types'
+import { CellProps } from '../types/PropTypes'
 
 class HeaderRow extends Row {
-    getCell(props: ICellData, key: number) {
+    getCell(props: CellProps, key: number) {
         return <HeaderCell {...props} key={key}/>
     }
 }

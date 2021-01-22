@@ -1,16 +1,18 @@
 import React, { Component } from 'react'
-import { CellValue, ICellData } from '..'
+import { CellData, CellValue } from '..'
+import { CellProps } from '../types/PropTypes'
+
 import deepEqual from 'deep-equal'
 
-class Cell extends Component<ICellData> {
-    shouldComponentUpdate(nextProps: Readonly<ICellData>): boolean {
-        return !deepEqual(this.props.data, nextProps.data)
+class Cell extends Component<CellProps> {
+    shouldComponentUpdate(nextProps: Readonly<CellData>): boolean {
+        return !deepEqual(this.props, nextProps)
     }
 
     getValue = (): CellValue => {
-        const { data } = this.props
+        const { data, columnId, rowId } = this.props
         if (this.props.renderer) {
-            return this.props.renderer(data)
+            return this.props.renderer({ columnId, rowId, data })
         } else if (typeof this.props.data === 'string' || typeof this.props.data === 'number') {
             return this.props.data
         }
@@ -19,10 +21,9 @@ class Cell extends Component<ICellData> {
 
     render() {
         const { style, className } = this.props
-        console.log('=== render Cell ===')
+        console.log('= render Cell =')
         return (
             <td
-                key={this.props.key}
                 style={style}
                 className={className}
             >

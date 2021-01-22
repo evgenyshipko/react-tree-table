@@ -1,7 +1,8 @@
 import React, { Component, CSSProperties } from 'react'
-import { ColumnData, RowData } from '../types/Types'
-import Table, { TableProps } from './Table'
-import { RowProps } from './Row'
+import { ColumnData, RowData } from '../types/DataTypes'
+import Table from './Table'
+import deepEqual from 'deep-equal'
+import { RowProps, TableProps } from '../types/PropTypes'
 
 export interface ShipTableProps {
     columns: ColumnData[],
@@ -11,24 +12,34 @@ export interface ShipTableProps {
 }
 
 interface State {
-    columnOrder: string[]
+    columns: ColumnData[]
 }
 
 class ShipTable extends Component<ShipTableProps> {
     state: State = {
-        columnOrder: this.getColumnOrder()
+        columns: this.props.columns
+    }
+
+    static getDerivedStateFromProps(props: ShipTableProps, state: State) {
+        if (!deepEqual(props.columns, state.columns)) {
+            return {
+                columns: props.columns
+            }
+        }
+        return {}
     }
 
     getColumnOrder() {
-        return this.props.columns.map(columnData => columnData.id)
+        return this.state.columns.map(columnData => columnData.id)
     }
 
     getTableProps(): TableProps {
-        const { columns, rows, className, style } = this.props
-
-        const header: RowProps = {
-            cellDataList: columns.map(columnData => (
+        const { rows, className, style } = this.props
+        const header = {
+            rowId: 'header',
+            cellDataList: this.props.columns.map(columnData => (
                 {
+                    columnId: columnData.id,
                     data: columnData.title,
                     className: columnData.className,
                     style: columnData.style
@@ -36,13 +47,14 @@ class ShipTable extends Component<ShipTableProps> {
             ))
         }
 
-        const rowList: RowProps[] = rows.map(rowData => (
-            {
-                cellDataList: this.state.columnOrder.map(columnName => rowData.data[columnName]),
+        const rowList: RowProps[] = rows.map(rowData => {
+            return {
+                rowId: rowData.id,
+                cellDataList: this.getColumnOrder().map(columnId => ({ ...rowData.data[columnId], columnId: columnId })),
                 style: rowData.style,
                 className: rowData.className
             }
-        ))
+        })
 
         return { header, rowList, className, style }
     }

@@ -1,18 +1,12 @@
-import React, { Component, CSSProperties } from 'react'
-import Row, { RowProps } from './Row'
+import React, { Component } from 'react'
+import Row from './Row'
 import HeaderRow from './HeaderRow'
-
-export interface TableProps {
-    className?: string
-    style?: CSSProperties
-    rowList: RowProps[]
-    header: RowProps
-}
+import { TableProps } from '../types/PropTypes'
 
 class Table extends Component<TableProps> {
     render() {
         const { rowList, header, className, style } = this.props
-
+        console.log('=== render Table ===')
         return (
             <table style={style} className={className}>
                 <thead>

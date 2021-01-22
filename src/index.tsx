@@ -1,6 +1,5 @@
 import ShipTable, { ShipTableProps } from './components/ShipTable'
-import './styles.css'
-import { ICellData, CellValue } from './types/Types'
-import CellData from './types/CellData'
+import './index.css'
+import { CellData, CellValue, RendererProps } from './types/DataTypes'
 
-export { ShipTable, ShipTableProps, CellValue, ICellData, CellData }
+export { ShipTable, ShipTableProps, CellValue, CellData, RendererProps }
