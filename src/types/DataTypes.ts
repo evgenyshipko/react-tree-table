@@ -4,7 +4,7 @@ import { CSSProperties } from 'react'
 import { RowIdType } from './PropTypes'
 
 export interface CommonData {
-    className?: string,
+    className?: string[],
     style?: CSSProperties
 }
 
@@ -13,10 +13,10 @@ export interface ColumnData extends CommonData{
     title: string,
 }
 
-export type RowData = Readonly<{
+export type RowData = {
     id: string,
-    data: Readonly<Record<string, CellData>>,
-} & CommonData>
+    data: Record<string, CellData>,
+} & CommonData
 
 export interface CellData<T = any> extends CommonData{
     data?: T
@@ -25,6 +25,11 @@ export interface CellData<T = any> extends CommonData{
 
 export interface CellDataExtended extends CellData{
     columnId: string
+}
+
+export interface TableData extends CommonData{
+    columns: ColumnData[],
+    rows: RowData[]
 }
 
 export type CellValue = string | number | JSX.Element | null

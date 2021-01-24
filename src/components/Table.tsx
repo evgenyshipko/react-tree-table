@@ -8,7 +8,7 @@ class Table extends Component<TableProps> {
         const { rowList, header, className, style } = this.props
         console.log('=== render Table ===')
         return (
-            <table style={style} className={className}>
+            <table style={style} className={className?.join(' ')}>
                 <thead>
                     <HeaderRow {...header}/>
                 </thead>

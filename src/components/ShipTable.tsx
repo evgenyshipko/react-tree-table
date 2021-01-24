@@ -1,26 +1,19 @@
-import React, { Component, CSSProperties } from 'react'
-import { ColumnData, RowData } from '../types/DataTypes'
+import React, { Component } from 'react'
+import { ColumnData, TableData } from '../types/DataTypes'
 import Table from './Table'
 import deepEqual from 'deep-equal'
 import { RowProps, TableProps } from '../types/PropTypes'
-
-export interface ShipTableProps {
-    columns: ColumnData[],
-    rows: RowData[],
-    className?: string,
-    style?: CSSProperties
-}
 
 interface State {
     columns: ColumnData[]
 }
 
-class ShipTable extends Component<ShipTableProps> {
+class ShipTable extends Component<TableData> {
     state: State = {
         columns: this.props.columns
     }
 
-    static getDerivedStateFromProps(props: ShipTableProps, state: State) {
+    static getDerivedStateFromProps(props: TableData, state: State) {
         if (!deepEqual(props.columns, state.columns)) {
             return {
                 columns: props.columns

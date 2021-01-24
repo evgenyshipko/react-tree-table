@@ -6,7 +6,7 @@ class HeaderCell extends Cell {
         const { style, className } = this.props
         console.log('=== render HeaderCell ===')
         return (
-            <th style={style} className={className}>
+            <th style={style} className={className?.join(' ')}>
                 {this.getValue()}
             </th>
         )

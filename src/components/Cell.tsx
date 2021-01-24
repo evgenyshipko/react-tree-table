@@ -25,7 +25,7 @@ class Cell extends Component<CellProps> {
         return (
             <td
                 style={style}
-                className={className}
+                className={className?.reduce((a, b) => a + ' ' + b)}
             >
                 {this.getValue()}
             </td>

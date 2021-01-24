@@ -1,5 +1,7 @@
-import ShipTable, { ShipTableProps } from './components/ShipTable'
+import ShipTable from './components/ShipTable'
+import TreeTable from './components/TreeTable'
 import './index.css'
-import { CellData, CellValue, RendererProps } from './types/DataTypes'
+import { CellData, CellValue, RendererProps, TableData } from './types/DataTypes'
+import { TreeTableData } from './types/TreeDataTypes'
 
-export { ShipTable, ShipTableProps, CellValue, CellData, RendererProps }
+export { ShipTable, TableData, TreeTableData, CellValue, CellData, RendererProps, TreeTable }

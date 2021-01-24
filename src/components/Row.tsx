@@ -29,7 +29,10 @@ class Row extends Component<RowProps> {
         const { style, cellDataList, className } = this.props
         console.log('= render Row =')
         return (
-            <tr style={style} className={className}>
+            <tr
+                style={style}
+                className={className?.join(' ')}
+            >
                 {cellDataList.map((cellData, index) => this.getCell(this.transformCellData(cellData), index))}
             </tr>
         )

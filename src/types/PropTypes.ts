@@ -2,7 +2,7 @@ import { CellDataExtended, Renderer } from './DataTypes'
 import { CSSProperties } from 'react'
 
 interface CommonProps {
-    className?: string,
+    className?: string[],
     style?: CSSProperties
 }
 
@@ -23,4 +23,4 @@ export interface TableProps extends CommonProps{
     header: RowProps
 }
 
-export type RowIdType = string | number
+export type RowIdType = string
