@@ -5,7 +5,7 @@ import { Renderer } from '../types/DataTypes'
 import ShipTable from './ShipTable'
 import deepEqual from 'deep-equal'
 
-// import deepEqual from 'deep-equal'
+/* global HTMLButtonElement */
 
 class TreeTable extends Component<TreeTableData> {
     state: TreeTableData = {
@@ -13,16 +13,16 @@ class TreeTable extends Component<TreeTableData> {
         rows: []
     }
 
-    static getDerivedStateFromProps(nextProps: TreeTableData, nextState: TreeTableData) {
-        if (!deepEqual(nextProps, nextState)) {
-            return TreeTable.transformProps(nextProps, nextState)
-        }
-        return {}
+    constructor(props: TreeTableData) {
+        super(props)
+        this.state = this.transformProps(props)
     }
 
-    /* componentDidMount() {
-        this.setState(this.transformProps(this.props))
-    }*/
+    componentDidUpdate(prevProps: Readonly<TreeTableData>, _nextState: Readonly<TreeTableData>) {
+        if (!deepEqual(prevProps, this.props)) {
+            this.setState(this.transformProps(this.props))
+        }
+    }
 
     static getGroupedColumnId = (props: TreeTableData) => {
         let counter = 0
@@ -52,7 +52,7 @@ class TreeTable extends Component<TreeTableData> {
         return result
     }
 
-    static transformProps = (props: TreeTableData, state: TreeTableData) => {
+    transformProps = (props: TreeTableData) => {
         const groupedColumnId = TreeTable.getGroupedColumnId(props)
         const childRowsMapping = TreeTable.getChildRowsMapping(props)
         const parentIdArr = Object.keys(childRowsMapping)
@@ -66,7 +66,7 @@ class TreeTable extends Component<TreeTableData> {
                             ...rowData.data,
                             [groupedColumnId]: {
                                 ...rowData.data[groupedColumnId],
-                                renderer: TreeTable.getTransformedRenderer(state, childRowsMapping[rowData.id], rowData.data[groupedColumnId].renderer)
+                                renderer: this.getTransformedRenderer(childRowsMapping[rowData.id], rowData.data[groupedColumnId].renderer, rowData.id)
                             }
                         }
                     }
@@ -76,7 +76,7 @@ class TreeTable extends Component<TreeTableData> {
         }
     }
 
-    static toggleHideRow = (rowData: TreeRowData) => {
+    toggleHideRow = (rowData: TreeRowData): TreeRowData => {
         console.log('=== toggleHideRow ===')
         const hiddenClass = 'shiptable-hidden-row'
         if (rowData.className) {
@@ -86,29 +86,57 @@ class TreeTable extends Component<TreeTableData> {
         } else {
             rowData.className = [hiddenClass]
         }
+        if (rowData.className.length === 0) {
+            rowData.className = undefined
+        }
         return rowData
     }
 
-    static getTransformedRenderer = (state: TreeTableData, childRowIdArr: string[], renderer?: Renderer<any>): Renderer<any> => {
-        const button = (
-            <button
-                onClick={() => {
-                    state.rows = state.rows.map((rowData) => {
-                        if (childRowIdArr.includes(rowData.id)) {
-                            return TreeTable.toggleHideRow(rowData)
-                        }
-                        return rowData
-                    })
-                }}>
-                test
-            </button>
-        )
-        if (renderer) {
-            console.log('RENDEEEEEEEEEEEEEEEER')
-            return (props) => <><div className='inline-block'>{button}</div><div className='inline-block'>{renderer(props)}</div></>
-        } else {
-            return (props) => <><div className='inline-block'>{button}</div><div className='inline-block'>{props.data}</div></>
+    getTransformedRenderer = (childRowIdArr: string[], renderer?: Renderer<any>, rowId?: RowIdType): Renderer<any> => {
+        const groupedColumnId = TreeTable.getGroupedColumnId(this.props)
+        let visibility = true
+        const getButton = () => {
+            return (
+                <button
+                    onClick={() => {
+                        visibility = !visibility
+                        this.setState({
+                            ...this.state,
+                            rows: this.state.rows.map((rowData) => {
+                                if (childRowIdArr.includes(rowData.id)) {
+                                    return this.toggleHideRow(rowData)
+                                }
+                                if (rowData.id === rowId && rowId) {
+                                    // refresh +/- button state
+                                    return {
+                                        ...rowData,
+                                        data: {
+                                            ...rowData.data,
+                                            [groupedColumnId]: {
+                                                ...rowData.data[groupedColumnId],
+                                                renderer: this.getTransformedRenderer(childRowIdArr, rowData.data[groupedColumnId].renderer)
+                                            }
+                                        }
+                                    }
+                                }
+                                return rowData
+                            })
+                        })
+                    }}>
+                    {visibility ? '-' : '+'}
+                </button>
+            )
         }
+        return (props) => (
+            <>
+                <div className='inline-block'>
+                    {rowId ? getButton() : null}
+                </div>
+                <div className='inline-block'>
+                    {renderer ? renderer(props) : props.data}
+                </div>
+            </>
+        )
     }
 
     render() {
