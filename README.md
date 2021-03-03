@@ -1,10 +1,28 @@
 
-**React/Typescript project boilerplate**
+**react-tree-table**
 
-*Webpack configuration:*
-1. typescript-loader - for transpile tsx files to ts, ts to js and js code from ES6/7/8 to ES5
-2. mini-css-extract-plugin - extracts CSS into separate files. It creates a CSS file per JS file which contains CSS.
-3. css-loader - interprets @import and url() like import/require() and will resolve them.
-4. html-webpack-plugin - generate html using template
-5. clean-webpack-plugin - clean dist folder after each build
-6. resolve : {alias ...} - allows absolute paths in imports
+Здесь хочу написать компонент-таблицу, которая не будет полностью перерендериваться при любом изменении данных
+и иметь возможность древовидного отображения. Каждая ячейка таблицы имеет возможность рендерить данные с помощью
+кастомного рендерера.
+
+Что сделано на 03.03.2021:
+1. Реализована сборка на rollup и классовых компонентах (ветка rollup-build-master), добавлена древодидность.
+Возникло желание переписать на функциональные компоненты и возникла проблема с тем, что
+сборка не понимает хуки. Пока принято решение от этой сборки отказаться.
+2. Реализована сборка на webpack и функциональных компонентах. Использованы memo и useMemo
+для предотвращения лишних рендеров и перевычислений.
+
+Проблемы:
+1. При любом изменении происходит перерендер всех строк (а что если их 1000?).
+При этом рендерятся только нужные ячейки (уже успех!).
+
+
+Планы:
+1. Для рендеринга только части строк заюзать технику windowing`a.
+Например с помощью [react-window](https://github.com/bvaughn/react-window)
+или других подобных библиотек.
+2. Реализовать древовидность в версии с функц. компонентами.
+
+
+О проекте: разработкой занимаюсь в свободное время в учебных целях.
+
